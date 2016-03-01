@@ -55,12 +55,10 @@ static EYLogViewer* shared;
     dispatch_once(&onceToken, ^
     {
         NSURL *url = [[NSFileManager.defaultManager URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
-        NSError *error = nil;
 
         if (![NSFileManager.defaultManager fileExistsAtPath:url.absoluteString])
         {
-            [NSFileManager.defaultManager createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:&error];
-            if(error){ NSLog(@"Can not create Application Support directory: %@", error); }
+            [NSFileManager.defaultManager createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:nil];
         }
 
         logFilePath = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject stringByAppendingPathComponent:@"EYLogViewer.log"];
@@ -170,9 +168,7 @@ static EYLogViewer* shared;
         return;
     
     // update log view
-    NSError* error;
-    NSData *d = [NSData dataWithContentsOfFile:[EYLogViewer logFilePath] options:0 error:&error];
-    if(error){ NSLog(@"Can not open log file: %@", error); }
+    NSData *d = [NSData dataWithContentsOfFile:[EYLogViewer logFilePath] options:0 error:nil];
     NSString *s = [NSString.alloc initWithData:d encoding:NSUTF8StringEncoding];
 
     if(![s isEqualToString:@""])
