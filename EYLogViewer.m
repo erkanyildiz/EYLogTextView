@@ -52,15 +52,17 @@ static EYLogViewer* shared;
 
 + (NSString*)logFilePath
 {
-    static NSString *logFilePath = nil;
+    static NSString* logFilePath = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^
     {
-        NSURL *url = [[NSFileManager.defaultManager URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
+        NSURL* url = [NSFileManager.defaultManager URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask].lastObject;
 
         if (![NSFileManager.defaultManager fileExistsAtPath:url.absoluteString])
         {
-            [NSFileManager.defaultManager createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:nil];
+            NSError* errorDir = nil;
+            [NSFileManager.defaultManager createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:&errorDir];
+            if(errorDir){ NSLog(@"Can not create Application Support directory: %@", errorDir); }
         }
 
         logFilePath = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject stringByAppendingPathComponent:@"EYLogViewer.log"];
@@ -164,16 +166,20 @@ static EYLogViewer* shared;
         return;
 
     // check if log file changed
-    NSDictionary* dict = [NSFileManager.defaultManager attributesOfItemAtPath:[EYLogViewer logFilePath] error:nil];
+    NSError* errorAttr = nil;
+    NSDictionary* dict = [NSFileManager.defaultManager attributesOfItemAtPath:[EYLogViewer logFilePath] error:&errorAttr];
+    if(errorAttr){ NSLog(@"Can not get attributes of log file: %@", errorAttr); }
     if([self.lastUpdateDate isEqualToDate:dict[NSFileModificationDate]])
         return;
     
-    // update log view
-    NSData *d = [NSData dataWithContentsOfFile:[EYLogViewer logFilePath] options:0 error:nil];
-    NSString *s = [NSString.alloc initWithData:d encoding:NSUTF8StringEncoding];
+    // update text view contents with latest logs
+    NSError* errorRead = nil;
+    NSData* readData = [NSData dataWithContentsOfFile:[EYLogViewer logFilePath] options:0 error:&errorRead];
+    if(errorRead){ NSLog(@"Can not read log file: %@", errorRead); }
+    NSString* readString = [NSString.alloc initWithData:readData encoding:NSUTF8StringEncoding];
 
-    if(![s isEqualToString:@""])
-        txt_console.text = s;
+    if(![readString isEqualToString:@""])
+        txt_console.text = readString;
 
     self.lastUpdateDate = dict[NSFileModificationDate];
     
@@ -239,7 +245,7 @@ static EYLogViewer* shared;
 
 - (void)onTap:(UITapGestureRecognizer*)recognizer
 {
-    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = txt_console.text;
 }
 
