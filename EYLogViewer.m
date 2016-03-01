@@ -16,7 +16,9 @@
     BOOL isVisible;
     BOOL canUpdate;
 }
+@property(nonatomic,strong) NSDate* lastUpdateDate;
 @end
+
 
 @implementation EYLogViewer
 
@@ -162,9 +164,8 @@ static EYLogViewer* shared;
         return;
 
     // check if log file changed
-    static NSDate* lastUpdateDate = nil;
     NSDictionary* dict = [NSFileManager.defaultManager attributesOfItemAtPath:[EYLogViewer logFilePath] error:nil];
-    if([lastUpdateDate isEqualToDate:dict[NSFileModificationDate]])
+    if([self.lastUpdateDate isEqualToDate:dict[NSFileModificationDate]])
         return;
     
     // update log view
@@ -174,7 +175,7 @@ static EYLogViewer* shared;
     if(![s isEqualToString:@""])
         txt_console.text = s;
 
-    lastUpdateDate = dict[NSFileModificationDate];
+    self.lastUpdateDate = dict[NSFileModificationDate];
     
     // deal with uitextview scrolling issues
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(),
