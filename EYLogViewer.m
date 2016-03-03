@@ -142,7 +142,7 @@ static EYLogViewer* shared;
     txt_console.editable = NO;
     txt_console.selectable = NO;
     txt_console.backgroundColor = UIColor.clearColor;
-    txt_console.textColor = RGBA(215,201,169,1);
+    txt_console.textColor = [UIColor colorWithRed:215/255.0 green:201/255.0 blue:169/255.0 alpha:1];
     txt_console.font = [UIFont fontWithName:@"Menlo" size:10];
     [vw_container addSubview:txt_console];
 
