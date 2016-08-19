@@ -4,7 +4,7 @@ A simple viewer to see logs on your iDevice when it is not connected to Xcode.
 #Features
 
  - One line to integrate
- - Always on top (except keyboards etc...)
+ - Always on top (except system windows like keyboards, alertviews etc...)
  - Visible on both light and dark backgrounds with optimal opacity, colors and size
  - NSLog compatible (no special logging method needed)
  - Drag&Drop to any point on the screen by long press
@@ -19,7 +19,7 @@ Add following line:
 
 in `main.m` or `application:didFinishLaunchingWithOptions:` method of your application.
 
-`main.m` is recommended to catch logs generated while app is being launhed.
+`main.m` is recommended to catch logs generated while app is being launched.
 And do not forget to import of course:
 
 `#import "EYLogViewer.h"`
