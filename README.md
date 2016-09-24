@@ -7,17 +7,15 @@ A simple viewer to see logs on your iDevice when it is not connected to Xcode.
  - Always on top (except system windows like keyboards, alertviews etc...)
  - Visible on both light and dark backgrounds with optimal opacity, colors and size
  - NSLog compatible (no special logging method needed)
+ - Uses NSPipe on stderr (no overhead)
  - Drag&Drop to any point on the screen by long press
  - Copy log contents by double tap
  - Hide by 3-finger swipe down anywhere on screen
  - Show by 3-finger swipe up anywhere on screen
 
 #Usage
-Import `EYLogViewer` in `Prefix.pch` file of your project :
 
-`#import "EYLogViewer.h"`
-
-Add following line to beginning of `main` function in `main.m` :
+In `main.m` import `EYLogViewer.h` and add following line at the beginning of `main` function :
 
 `[EYLogViewer add];`
 

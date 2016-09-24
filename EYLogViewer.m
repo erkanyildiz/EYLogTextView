@@ -1,5 +1,5 @@
 // erkanyildiz
-// 20160925-0324JST
+// 20160925-0417JST
 //
 // https://github.com/erkanyildiz/EYLogViewer
 //
@@ -17,8 +17,6 @@
     BOOL isBeingDragged;
     BOOL isVisible;
 }
-+ (instancetype)sharedInstance;
-- (void)update:(NSString*)log;
 @end
 
 
@@ -34,6 +32,12 @@
 
 + (void)add
 {
+    NSPipe* pipe = NSPipe.pipe;
+    NSFileHandle* fhr = [pipe fileHandleForReading];
+    dup2([[pipe fileHandleForWriting] fileDescriptor], fileno(stderr));
+    [NSNotificationCenter.defaultCenter addObserver:EYLogViewer.sharedInstance selector:@selector(readCompleted:) name:NSFileHandleReadCompletionNotification object:fhr];
+    [fhr readInBackgroundAndNotify];
+
     [EYLogViewer.sharedInstance tryToFindTopWindow];
 }
 
@@ -103,12 +107,10 @@
     vw_container.layer.shadowRadius = 3;
     vw_container.layer.shadowOpacity = 1;
     [UIApplication.sharedApplication.keyWindow addSubview:vw_container];
-
     // add long press gesture for moving
     UILongPressGestureRecognizer* longPressGestureRec = [UILongPressGestureRecognizer.alloc initWithTarget:self action:@selector(onLongPress:)];
     longPressGestureRec.minimumPressDuration = 0.2;
     [vw_container addGestureRecognizer:longPressGestureRec];
-    
     // add double tap press gesture for copying logs
     UITapGestureRecognizer* tapGestureRec = [UITapGestureRecognizer.alloc initWithTarget:self action:@selector(onDoubleTap:)];
     tapGestureRec.numberOfTapsRequired = 2;
@@ -129,15 +131,18 @@
 }
 
 
-- (void)update:(NSString*)log
+- (void)readCompleted:(NSNotification*)notification
 {
-    if(isBeingDragged)
-        return;
+    [((NSFileHandle*)notification.object) readInBackgroundAndNotify];
+    NSString* logs = [NSString.alloc initWithData:notification.userInfo[NSFileHandleNotificationDataItem] encoding:NSUTF8StringEncoding];
 
     dispatch_async(dispatch_get_main_queue(), ^
     {
-        txt_console.text = [txt_console.text stringByAppendingFormat:@"%@\n",log];
+        txt_console.text = [txt_console.text stringByAppendingFormat:@"%@",logs];
     });
+
+    if(isBeingDragged)
+        return;
 
     // deal with uitextview scrolling issues
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(),
@@ -233,40 +238,3 @@
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{ vw_container.alpha = 0.7; }completion:nil];
 }
 @end
-
-
-#pragma mark -
-
-
-void EYLog(NSString *format, ...)
-{
-    static NSString* bundleName;
-    static NSDateFormatter* dateFormatter;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^
-    {
-        bundleName = NSBundle.mainBundle.infoDictionary[(NSString*)kCFBundleNameKey];
-        dateFormatter = NSDateFormatter.new;
-        dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-    });
-
-    CFAbsoluteTime now = kCFAbsoluteTimeIntervalSince1970 + CFAbsoluteTimeGetCurrent();
-    int millimicroseconds = (now-(int)now)*1000000;
-    NSString* datetime = [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:now]];
-    va_list args;
-    va_start(args, format);
-    NSString* message = [NSString.alloc initWithFormat:format arguments:args];
-    va_end(args);
-
-    NSString* log = [NSString stringWithFormat:@"%@.%06i %@[%d:%d] %@",
-                           datetime,
-                           millimicroseconds,
-                           bundleName,
-                           NSProcessInfo.processInfo.processIdentifier,
-                           pthread_mach_thread_np(pthread_self()),
-                           message];
-
-    fprintf(stderr,"%s\n", log.UTF8String);
-
-    [EYLogViewer.sharedInstance update:log];
-}

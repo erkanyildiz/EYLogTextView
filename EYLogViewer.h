@@ -1,17 +1,11 @@
 // erkanyildiz
-// 20160925-0324JST
+// 20160925-0417JST
 //
 // https://github.com/erkanyildiz/EYLogViewer
 //
 // EYLogViewer.h
 
 #import <Foundation/Foundation.h>
-
-#ifdef NSLog
-    #undef NSLog
-#endif
-#define NSLog(...) EYLog(__VA_ARGS__)
-void EYLog(NSString *format, ...);
 
 
 @interface EYLogViewer : NSObject
