@@ -13,16 +13,14 @@ A simple viewer to see logs on your iDevice when it is not connected to Xcode.
  - Show by 3-finger swipe up anywhere on screen
 
 #Usage
-Add following line:
+Import `EYLogViewer` in `Prefix.pch` file of your project :
+
+`#import "EYLogViewer.h"`
+
+Add following line to beginning of `main` function in `main.m` :
 
 `[EYLogViewer add];`
 
-in `main.m` or `application:didFinishLaunchingWithOptions:` method of your application.
-
-`main.m` is recommended to catch logs generated while app is being launched.
-And do not forget to import of course:
-
-`#import "EYLogViewer.h"`
 
 #ScreenShots
 ![ss1](https://cloud.githubusercontent.com/assets/1222652/13434323/c2bc7be8-e018-11e5-8578-c265730912ad.png)

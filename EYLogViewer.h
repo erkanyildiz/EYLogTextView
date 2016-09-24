@@ -1,11 +1,18 @@
 // erkanyildiz
-// 20160229-1439
+// 20160925-0324JST
 //
 // https://github.com/erkanyildiz/EYLogViewer
 //
 // EYLogViewer.h
 
 #import <Foundation/Foundation.h>
+
+#ifdef NSLog
+    #undef NSLog
+#endif
+#define NSLog(...) EYLog(__VA_ARGS__)
+void EYLog(NSString *format, ...);
+
 
 @interface EYLogViewer : NSObject
 /**
@@ -28,4 +35,5 @@
  * Three-finger swipe down gesture hides EYLogViewer also.
  */
 + (void)hide;
+
 @end
