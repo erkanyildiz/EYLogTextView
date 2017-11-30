@@ -74,17 +74,10 @@
 
 -(void)setup
 {
-    // add three finger swipe down gesture for hiding
-    UISwipeGestureRecognizer* swipeDownGestureRec = [UISwipeGestureRecognizer.alloc initWithTarget:self action:@selector(onSwipeDown:)];
-    swipeDownGestureRec.direction = UISwipeGestureRecognizerDirectionDown;
-    swipeDownGestureRec.numberOfTouchesRequired = 3;
-    [UIApplication.sharedApplication.keyWindow addGestureRecognizer:swipeDownGestureRec];
-
-    // add three finger swipe up gesture for showing
-    UISwipeGestureRecognizer* swipeUpGestureRec = [UISwipeGestureRecognizer.alloc initWithTarget:self action:@selector(onSwipeUp:)];
-    swipeUpGestureRec.direction = UISwipeGestureRecognizerDirectionUp;
-    swipeUpGestureRec.numberOfTouchesRequired = 3;
-    [UIApplication.sharedApplication.keyWindow addGestureRecognizer:swipeUpGestureRec];
+    // add double tap gesture for showing/hiding log view
+    UITapGestureRecognizer* tapGestureRec = [UITapGestureRecognizer.alloc initWithTarget:self action:@selector(onDoubleTap:)];
+    tapGestureRec.numberOfTapsRequired = 2;
+    [UIApplication.sharedApplication.keyWindow addGestureRecognizer:tapGestureRec];
 
     // add container view with border, shadow, background color etc...
     const float consoleHeightRatio = 0.4;   //0.0 to 1.0 from bottom to top
@@ -98,8 +91,8 @@
                                 };
 
     vw_container = [UIView.alloc initWithFrame:initialRect];
-    vw_container.backgroundColor = [UIColor colorWithRed:156/255.0 green:82/255.0 blue:72/255.0 alpha:1];
-    vw_container.alpha = 0.7;
+    vw_container.backgroundColor = [UIColor blackColor];
+    vw_container.alpha = 0.7f;
     vw_container.layer.borderWidth = 1;
     vw_container.layer.borderColor =  [UIColor colorWithRed:92/255.0 green:44/255.0 blue:36/255.0 alpha:1].CGColor;
     vw_container.layer.shadowColor = UIColor.blackColor.CGColor;
@@ -107,14 +100,14 @@
     vw_container.layer.shadowRadius = 3;
     vw_container.layer.shadowOpacity = 1;
     [UIApplication.sharedApplication.keyWindow addSubview:vw_container];
-    // add long press gesture for moving
+    // add pan gesture for moving
+    UIPanGestureRecognizer* panGestureRec = [UIPanGestureRecognizer.alloc initWithTarget:self action:@selector(onMove:)];
+    [vw_container addGestureRecognizer:panGestureRec];
+    
+    // add long press gesture for copying
     UILongPressGestureRecognizer* longPressGestureRec = [UILongPressGestureRecognizer.alloc initWithTarget:self action:@selector(onLongPress:)];
     longPressGestureRec.minimumPressDuration = 0.2;
     [vw_container addGestureRecognizer:longPressGestureRec];
-    // add double tap press gesture for copying logs
-    UITapGestureRecognizer* tapGestureRec = [UITapGestureRecognizer.alloc initWithTarget:self action:@selector(onDoubleTap:)];
-    tapGestureRec.numberOfTapsRequired = 2;
-    [vw_container addGestureRecognizer:tapGestureRec];
 
     // add text view to display logs
     txt_console = [UITextView.alloc initWithFrame:vw_container.bounds];
@@ -165,12 +158,10 @@
 
 #pragma mark -
 
-
-- (void)onLongPress:(UIPanGestureRecognizer*)recognizer
-{
+- (void)onMove:(UIPanGestureRecognizer*)recognizer {
     // drag drop
     UIView* topView = (UIView*)UIApplication.sharedApplication.keyWindow;
-
+    
     static CGPoint diff;
     static CGPoint scrollContentOffset;
     if (recognizer.state == UIGestureRecognizerStateBegan)
@@ -194,11 +185,23 @@
     }
 }
 
+- (void)onLongPress:(UIPanGestureRecognizer*)recognizer
+{
+    if (recognizer.state == UIGestureRecognizerStateBegan)
+    {
+        UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
+        pasteboard.string = txt_console.text;
+    }
+}
+
 
 - (void)onDoubleTap:(UITapGestureRecognizer*)recognizer
 {
-    UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
-    pasteboard.string = txt_console.text;
+    if(isVisible) {
+        [self hideWithAnimation];
+    } else {
+        [self showWithAnimation];
+    }
 }
 
 
