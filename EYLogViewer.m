@@ -1,5 +1,5 @@
 // erkanyildiz
-// 20180107-2136+0900
+// 20180107-2206+0900
 //
 // https://github.com/erkanyildiz/EYLogViewer
 //
@@ -52,6 +52,12 @@
 + (void)hide
 {
     [EYLogViewer.sharedInstance hideWithAnimation];
+}
+
+
++ (void)clear
+{
+    [EYLogViewer.sharedInstance clearConsole];
 }
 
 
@@ -113,9 +119,14 @@
     [vw_container addGestureRecognizer:longPressGestureRec];
 
     // add double tap press gesture for copying logs
-    UITapGestureRecognizer* tapGestureRec = [UITapGestureRecognizer.alloc initWithTarget:self action:@selector(onDoubleTap:)];
-    tapGestureRec.numberOfTapsRequired = 2;
-    [vw_container addGestureRecognizer:tapGestureRec];
+    UITapGestureRecognizer* doubleTapGestureRec = [UITapGestureRecognizer.alloc initWithTarget:self action:@selector(onDoubleTap:)];
+    doubleTapGestureRec.numberOfTapsRequired = 2;
+    [vw_container addGestureRecognizer:doubleTapGestureRec];
+
+    // add triple tap press gesture for clearing logs
+    UITapGestureRecognizer* tripleTapGestureRec = [UITapGestureRecognizer.alloc initWithTarget:self action:@selector(onTripleTap:)];
+    tripleTapGestureRec.numberOfTapsRequired = 3;
+    [vw_container addGestureRecognizer:tripleTapGestureRec];
 
     // add text view to display logs
     tx_console = [UITextView.alloc initWithFrame:vw_container.bounds];
@@ -197,6 +208,12 @@
 }
 
 
+- (void)onTripleTap:(UITapGestureRecognizer*)recognizer
+{
+    [self clearConsole];
+}
+
+
 - (void)onSwipeDown:(UISwipeGestureRecognizer*)recognizer
 {
     [self hideWithAnimation];
@@ -231,6 +248,12 @@
     isVisible = YES;
 
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{ vw_container.alpha = 0.7; }completion:nil];
+}
+
+
+- (void)clearConsole
+{
+    tx_console.text = @"";
 }
 
 @end

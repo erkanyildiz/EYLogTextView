@@ -1,5 +1,5 @@
 // erkanyildiz
-// 20180107-2136+0900
+// 20180107-2206+0900
 //
 // https://github.com/erkanyildiz/EYLogViewer
 //
@@ -30,5 +30,12 @@
  * Three-finger swipe down gesture hides EYLogViewer also.
  */
 + (void)hide;
+
+/**
+ * Clears console.
+ *
+ * Triple-tap gesture clears console also.
+ */
++ (void)clear;
 
 @end
