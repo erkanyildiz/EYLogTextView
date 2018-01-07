@@ -1,5 +1,5 @@
 // erkanyildiz
-// 20160925-0417JST
+// 20180107-2027+0900
 //
 // https://github.com/erkanyildiz/EYLogViewer
 //
@@ -9,6 +9,7 @@
 
 
 @interface EYLogViewer : NSObject
+
 /**
  * Adds EYLogViewer to the top window of the application.
  *
@@ -31,3 +32,4 @@
 + (void)hide;
 
 @end
+

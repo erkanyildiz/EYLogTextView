@@ -1,11 +1,12 @@
 // erkanyildiz
-// 20160925-0417JST
+// 20180107-2027+0900
 //
 // https://github.com/erkanyildiz/EYLogViewer
 //
 // EYLogViewer.m
 
 #import "EYLogViewer.h"
+#import <UIKit/UIKit.h>
 #include <pthread.h>
 
 
@@ -238,3 +239,4 @@
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{ vw_container.alpha = 0.7; }completion:nil];
 }
 @end
+
