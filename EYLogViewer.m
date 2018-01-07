@@ -1,5 +1,5 @@
 // erkanyildiz
-// 20180107-2206+0900
+// 20180107-2246+0900
 //
 // https://github.com/erkanyildiz/EYLogViewer
 //
@@ -36,6 +36,7 @@
     NSPipe* pipe = NSPipe.pipe;
     NSFileHandle* fhr = pipe.fileHandleForReading;
     dup2(pipe.fileHandleForWriting.fileDescriptor, fileno(stderr));
+    dup2(pipe.fileHandleForWriting.fileDescriptor, fileno(stdout));
     [NSNotificationCenter.defaultCenter addObserver:EYLogViewer.sharedInstance selector:@selector(readCompleted:) name:NSFileHandleReadCompletionNotification object:fhr];
     [fhr readInBackgroundAndNotify];
 
