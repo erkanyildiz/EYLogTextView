@@ -1,5 +1,5 @@
 # EYLogViewer
-A simple viewer to see console logs on your iDevice's screen at runtime when it is not connected to Xcode.
+A simple viewer to see your app's logs on your iDevice in realtime.
 
 # Features
 
@@ -8,6 +8,7 @@ A simple viewer to see console logs on your iDevice's screen at runtime when it 
  - Visible on both light and dark backgrounds with optimal opacity, colors and size (macOS Terminal.app `Red Sands` theme)
  - NSLog compatible (no special logging method needed)
  - Uses NSPipe on stderr (no overhead)
+ - Works even while not connected to Xcode
  - Drag&Drop to any point on the screen by long press
  - Copy console logs by double tap
  - Clear console logs by triple tap
