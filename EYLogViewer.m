@@ -58,10 +58,10 @@
 #pragma mark -
 
 
--(void)tryToFindTopWindow
+- (void)tryToFindTopWindow
 {
     UIView* topView = UIApplication.sharedApplication.keyWindow.subviews.lastObject;
-    if(!topView)
+    if (!topView)
     {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(tryToFindTopWindow) object:nil];
         [self performSelector:@selector(tryToFindTopWindow) withObject:nil afterDelay:0.1];
@@ -73,7 +73,7 @@
 }
 
 
--(void)setup
+- (void)setup
 {
     // add three finger swipe down gesture for hiding
     UISwipeGestureRecognizer* swipeDownGestureRec = [UISwipeGestureRecognizer.alloc initWithTarget:self action:@selector(onSwipeDown:)];
@@ -91,27 +91,30 @@
     const float consoleHeightRatio = 0.4;   //0.0 to 1.0 from bottom to top
     const float margin = 5;                 //margin in pixels
 
-    CGRect initialRect =(CGRect){
-                                    margin,
-                                    UIScreen.mainScreen.bounds.size.height * (1.0 - consoleHeightRatio),
-                                    UIScreen.mainScreen.bounds.size.width - 2 * margin,
-                                    UIScreen.mainScreen.bounds.size.height * consoleHeightRatio - margin
-                                };
+    CGRect initialRect = (CGRect)
+    {
+        margin,
+        UIScreen.mainScreen.bounds.size.height * (1.0 - consoleHeightRatio),
+        UIScreen.mainScreen.bounds.size.width - 2.0 * margin,
+        UIScreen.mainScreen.bounds.size.height * consoleHeightRatio - margin
+    };
 
     vw_container = [UIView.alloc initWithFrame:initialRect];
     vw_container.backgroundColor = [UIColor colorWithRed:156/255.0 green:82/255.0 blue:72/255.0 alpha:1];
     vw_container.alpha = 0.7;
-    vw_container.layer.borderWidth = 1;
+    vw_container.layer.borderWidth = 1.0;
     vw_container.layer.borderColor =  [UIColor colorWithRed:92/255.0 green:44/255.0 blue:36/255.0 alpha:1].CGColor;
     vw_container.layer.shadowColor = UIColor.blackColor.CGColor;
-    vw_container.layer.shadowOffset = (CGSize){0,2};
-    vw_container.layer.shadowRadius = 3;
-    vw_container.layer.shadowOpacity = 1;
+    vw_container.layer.shadowOffset = (CGSize){0.0, 2.0};
+    vw_container.layer.shadowRadius = 3.0;
+    vw_container.layer.shadowOpacity = 1.0;
     [UIApplication.sharedApplication.keyWindow addSubview:vw_container];
+
     // add long press gesture for moving
     UILongPressGestureRecognizer* longPressGestureRec = [UILongPressGestureRecognizer.alloc initWithTarget:self action:@selector(onLongPress:)];
     longPressGestureRec.minimumPressDuration = 0.2;
     [vw_container addGestureRecognizer:longPressGestureRec];
+
     // add double tap press gesture for copying logs
     UITapGestureRecognizer* tapGestureRec = [UITapGestureRecognizer.alloc initWithTarget:self action:@selector(onDoubleTap:)];
     tapGestureRec.numberOfTapsRequired = 2;
@@ -123,7 +126,7 @@
     txt_console.selectable = NO;
     txt_console.backgroundColor = UIColor.clearColor;
     txt_console.textColor = [UIColor colorWithRed:215/255.0 green:201/255.0 blue:169/255.0 alpha:1];
-    txt_console.font = [UIFont fontWithName:@"Menlo" size:10];
+    txt_console.font = [UIFont fontWithName:@"Menlo" size:10.0];
     [vw_container addSubview:txt_console];
 
     // state bools
@@ -142,20 +145,19 @@
         txt_console.text = [txt_console.text stringByAppendingFormat:@"%@",logs];
     });
 
-    if(isBeingDragged)
+    if (isBeingDragged)
         return;
 
     // deal with uitextview scrolling issues
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(),
-    ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
+    {
         UIScrollView* textViewScroll = (UIScrollView*)txt_console;
 
-        BOOL shouldAutoScroll = (textViewScroll.contentOffset.y + txt_console.bounds.size.height*2 >= textViewScroll.contentSize.height);
+        BOOL shouldAutoScroll = (textViewScroll.contentOffset.y + txt_console.bounds.size.height * 2 >= textViewScroll.contentSize.height);
 
         if (shouldAutoScroll)
         {
-            NSRange myRange = NSMakeRange(txt_console.text.length-1, 0);
-
+            NSRange myRange = NSMakeRange(txt_console.text.length - 1, 0);
             [txt_console scrollRangeToVisible:myRange];
             txt_console.scrollEnabled = NO;
             txt_console.scrollEnabled = YES;
@@ -220,23 +222,23 @@
 
 - (void)hideWithAnimation
 {
-    if(!isVisible)
+    if (!isVisible)
         return;
 
     isVisible = NO;
 
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{ vw_container.alpha = 0; } completion:nil];
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{ vw_container.alpha = 0.0; } completion:nil];
 }
 
 
 - (void)showWithAnimation
 {
-    if(isVisible)
+    if (isVisible)
         return;
 
     isVisible = YES;
 
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{ vw_container.alpha = 0.7; }completion:nil];
 }
-@end
 
+@end
