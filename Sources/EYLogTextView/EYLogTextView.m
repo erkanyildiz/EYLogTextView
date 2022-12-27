@@ -11,6 +11,10 @@
 
 #pragma mark - UIResponder swizzle for detecting device shake
 
+@interface EYLogTextView ()
++ (void)toggleIfAllowed;
+@end
+
 @implementation UIResponder (EYLogTextView)
 
 + (void)setupShakeMotionDetection
@@ -26,7 +30,7 @@
 {
     [self EYLogTextView_motionEnded:motion withEvent:event];
 
-    [EYLogTextView toggle];
+    [EYLogTextView toggleIfAllowed];
 }
 
 @end
@@ -134,6 +138,7 @@
 
 @interface EYLogTextView ()
 @property BOOL shouldStayOnTop;
+@property BOOL shouldToggleOnShake;
 @end
 
 
@@ -172,6 +177,27 @@
 + (void)toggle
 {
     [EYLogTextView.sharedInstance toggleWithAnimation];
+}
+
+
++ (void)toggleIfAllowed
+{
+    if (EYLogTextView.sharedInstance.shouldToggleOnShake)
+    {
+        [EYLogTextView.sharedInstance toggleWithAnimation];
+    }
+}
+
+
++ (void)disableShakeToggle
+{
+    EYLogTextView.sharedInstance.shouldToggleOnShake = NO;
+}
+
+
++ (void)enableShakeToggle
+{
+    EYLogTextView.sharedInstance.shouldToggleOnShake = YES;
 }
 
 

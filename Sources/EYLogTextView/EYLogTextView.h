@@ -31,6 +31,16 @@
 + (void)toggle;
 
 /**
+ * Disables toggling the shared EYLogTextView instance visibility on device shake.
+ */
++ (void)disableShakeToggle;
+
+/**
+ * Enables toggling the shared EYLogTextView instance visibility on device shake.
+ */
++ (void)enableShakeToggle;
+
+/**
  * Clears the text on the shared EYLogTextView instance.
  */
 + (void)clear;
