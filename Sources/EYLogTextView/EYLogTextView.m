@@ -26,7 +26,7 @@
 {
     [self EYLogTextView_motionEnded:motion withEvent:event];
 
-    [EYLogTextView toggle];
+//    [EYLogTextView toggle];
 }
 
 @end
@@ -274,7 +274,7 @@
 - (void)setupGestureRecognizers
 {
     // NOTE: For showing/hiding console on device shake
-    [UIResponder setupShakeMotionDetection];
+//    [UIResponder setupShakeMotionDetection];
 
     // NOTE: For showing menu on single tap
     UITapGestureRecognizer* tapGestureRec = [UITapGestureRecognizer.alloc initWithTarget:self action:@selector(onTap:)];
